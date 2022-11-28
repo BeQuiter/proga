@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <set>
+using namespace std;
+
+
+int main()
+{
+    vector <int> v1, v2;
+    int a, b;
+    cout << "Введите количество значений для вектора 1 и 2 (в формате v1 v2): ";
+    cin >> a >> b;
+    v1.reserve(a);
+    v2.reserve(b);
+    srand(time(NULL));
+    int i;
+    for (int j = 0; j < a; ++j) {
+        v1.insert(v1.end(), rand() % 100 - 100);
+    };
+    for (int j = 0; j < b; ++j) {
+        v2.insert(v2.end(), rand() % 200 - 100);
+    };
+    //==========================================================================
+    for (int i = 0; i < a; i++) {
+        cout << v1[i] << " ";
+    };
+    cout << "\n";
+    for (int i = 0; i < b; i++) {
+        cout << v2[i] << " ";
+    };
+    cout << "\n";
+    //==========================================================================
+    float avr;
+    int sum = 0;
+    for (int i = 0; i < a; i++) {
+        sum = sum + v1[i];
+    };
+    avr = sum / a;
+    cout << "Среднее значение вектора 1: " << avr << "\n";
+    sum = 0;
+    for (int i = 0; i < b; i++) {
+        sum = sum + v2[i];
+    };
+    avr = sum / b;
+    cout << "Среднее значение вектора 2: " << avr << "\n";
+    //==========================================================================
+    set<int> same;
+    for (int i = 0; i < a; i++) {
+        for (int j = 0; j < b; j++) {
+            if (v1[i] == v2[j]) {
+                same.insert(v1[i]);
+            };
+        };
+    };
+    //==========================================================================
+    set <int> ::iterator it = same.begin();
+    for (it = same.begin(); it != same.end(); it++) {
+        cout << (*it) << " ";
+    };
+    return 0;
+}
