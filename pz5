@@ -1,0 +1,268 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <iomanip>
+
+using namespace std;
+
+struct Column{
+    int id_zap;
+    string brand;
+    string car_model;
+    int price;
+};
+
+vector<Column> vec;
+vector<Column> vec_buf;
+
+void Reader(vector<Column>& vec){
+    string line;
+    ifstream in("text.txt");
+    if (in.is_open())
+    {
+        int line_counter = 0;
+        while (getline(in, line))
+        {
+            Column struct_buf;
+            string string_buf;
+            int buf_counter = 0;
+            for (int i = 0; i <= line.size(); i++){
+                if ((line[i] == ' ') or (line[i] == '\r') or (i == line.size())){
+                    buf_counter++;
+                    switch(buf_counter){
+                        case 1:
+                            struct_buf.id_zap = stoi(string_buf);
+                            string_buf.clear();
+                            break;
+                        case 2:
+                            struct_buf.brand = string_buf;
+                            string_buf.clear();
+                            break;
+                        case 3:
+                            struct_buf.car_model = string_buf;
+                            string_buf.clear();
+                            break;
+                        case 4:
+                            struct_buf.price = stoi(string_buf);
+                            string_buf.clear();
+                            break;
+                    }
+                }
+                else {
+                    string_buf.push_back(line[i]);
+                }
+            }
+            vec.push_back(struct_buf);
+            line_counter++;
+        }
+    }
+    in.close();
+} 
+
+void Print(vector<Column>& vec){
+    cout << '|' << ' ' << setw(4) << "ID" << ' ' << '|' << ' ';
+    cout << setw(10) << "Brand" << ' '<< '|' << ' '; 
+    cout << setw(14) << "Car Model" << ' '<< '|' << ' '; 
+    cout << setw(6) << "Price" << ' '<< '|' << '\n';
+    cout.width(48);
+    cout.fill('-');
+    cout << '\n';
+    cout.fill(' ');
+    for (int i = 0; i < vec.size(); i++){
+        cout << '|' << ' ' << setw(4) << vec[i].id_zap << ' '<< '|' << ' ';
+        cout << setw(10) <<vec[i].brand << ' '<< '|' << ' ';
+        cout << setw(14) << vec[i].car_model << ' '<< '|' << ' ';
+        cout << setw(6) << vec[i].price << ' '<< '|' << '\n';
+    }
+}
+
+void PrintMainMenu(){
+    cout << "1. Вывести исходные данные.\n";
+    cout << "2. Перейти к выбору критерия для поиска.\n";
+    cout << "3. Закончить работу.\n";
+    cout << "Введите номер желаемого пункта:\n";
+}
+
+void PrintFinderMenu(){
+    cout << "1. Вывести текущий список\n";
+    cout << "2. Поиск по ID запчасти.\n";
+    cout << "3. Поиск по производителю запчасти.\n";
+    cout << "4. Поиск по модели автомобиля.\n";
+    cout << "5. Поиск по цене.\n";
+    cout << "6. Очистить критерии поиска.\n";
+    cout << "7. Закончить поиск.\n";
+    cout << "Введите номер желаемого пункта:\n";
+}
+
+void SortByID(int k){
+    if (vec_buf.empty()){
+        for (int i = 0; i < vec.size(); i++){
+        if (vec[i].id_zap == k){
+            vec_buf.push_back(vec[i]);
+            }
+        }
+    }
+    else {
+        vector<int> trashNumb; 
+        for (int i = 0; i < vec_buf.size(); i++){
+            if (vec_buf[i].id_zap != k){
+                trashNumb.push_back(i);
+            }
+        }
+        for (int i = trashNumb.size() -  1; i > -1; i--){
+            vec_buf.erase(vec_buf.begin() + (trashNumb[i]));
+        }
+    }
+}
+
+void SortByBrand(string k){
+    if (vec_buf.empty()){
+        for (int i = 0; i < vec.size(); i++){
+        if (vec[i].brand == k){
+            vec_buf.push_back(vec[i]);
+            }
+        }
+    }
+    else {
+        vector<int> trashNumb; 
+        for (int i = 0; i < vec_buf.size(); i++){
+            if (vec_buf[i].brand != k){
+                trashNumb.push_back(i);
+            }
+        }
+        for (int i = trashNumb.size() -  1; i > -1; i--){
+            vec_buf.erase(vec_buf.begin() + (trashNumb[i]));
+        }
+    }
+}
+
+void SortByModel(string k){
+    if (vec_buf.empty()){
+        for (int i = 0; i < vec.size(); i++){
+        if (vec[i].car_model == k){
+            vec_buf.push_back(vec[i]);
+            }
+        }
+    }
+    else {
+        vector<int> trashNumb; 
+        for (int i = 0; i < vec_buf.size(); i++){
+            if (vec_buf[i].car_model != k){
+                trashNumb.push_back(i);
+            }
+        }
+        for (int i = trashNumb.size() -  1; i > -1; i--){
+            vec_buf.erase(vec_buf.begin() + (trashNumb[i]));
+        }
+    }
+}
+
+void SortByPriceMax(int k){
+    if (vec_buf.empty()){
+        for (int i = 0; i < vec.size(); i++){
+            if (vec[i].price <= k){
+                vec_buf.push_back(vec[i]);
+            }
+        }
+    }
+    else {
+        vector<int> trashNumb; 
+        for (int i = 0; i <= vec_buf.size(); i++){
+            if (vec_buf[i].id_zap > k){
+                trashNumb.push_back(i);
+            }
+        }
+        for (int i = trashNumb.size() -  1; i > -1; i--){
+            vec_buf.erase(vec_buf.begin() + (trashNumb[i]));
+        }
+    }
+}
+
+void SortByPriceMin(int k){
+    if (vec_buf.empty()){
+        for (int i = 0; i < vec.size(); i++){
+            if (vec[i].price > k){
+                vec_buf.push_back(vec[i]);
+            }
+        }
+    }
+    else {
+        vector<int> trashNumb; 
+        for (int i = 0; i >= vec_buf.size(); i++){
+            if (vec_buf[i].id_zap < k){
+                trashNumb.push_back(i);
+            }
+        }
+        for (int i = trashNumb.size() -  1; i > -1; i--){
+            vec_buf.erase(vec_buf.begin() + (trashNumb[i]));
+        }
+    }
+}
+
+int main()
+{
+    Reader(vec);
+    int i = 0;
+    do{
+        PrintMainMenu();
+        cin >> i;
+        switch(i){
+            case 1: 
+                Print(vec);
+                break;
+            case 2:
+                int j;
+                do{
+                    PrintFinderMenu();
+                    cin >> j;
+                    int i_criterion;
+                    string s_criterion;
+                    switch(j){
+                        case 1:
+                            if (vec_buf.empty()){
+                                Print(vec);
+                            }
+                            else {
+                                Print(vec_buf);
+                            }
+                            break;
+                        case 2:
+                            cout << "Введите ID запчасти:\n";
+                            cin >> i_criterion;
+                            SortByID(i_criterion);
+                            Print(vec_buf);
+                            break;
+                        case 3:
+                            cout << "Введите производителя:\n";
+                            cin >> s_criterion;
+                            SortByBrand(s_criterion);
+                            Print(vec_buf);
+                            break;
+                        case 4:
+                            cout << "Введите модель автомобиля:\n";
+                            cin >> s_criterion;
+                            SortByModel(s_criterion);
+                            Print(vec_buf);
+                            break;
+                        case 5:
+                            cout << "Введите минимальную цену:\n";
+                            cin >> i_criterion;
+                            SortByPriceMin(i_criterion);
+                            cout << "Введите максимальную цену:\n";
+                            cin >> i_criterion;
+                            SortByPriceMax(i_criterion);
+                            Print(vec_buf);
+                            break;
+                        case 6:
+                            cout << "Критерии были успешно очищены!\n";
+                            vec_buf.clear();
+                            break;
+                    }
+                } while (j != 7);
+                vec_buf.clear();
+                break;
+        }
+    } while (i != 3);
+    return 0;
+}
